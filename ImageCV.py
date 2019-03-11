@@ -1,11 +1,12 @@
 import cv2
 import numpy as np
 import tensorflow as tf
-from tensorflow import keras
+import keras
 
 
 def run(filepath):
     timg = cv2.imread(filepath, 100)
+    print([len(timg), len(timg[0])])
     final = cv2.cvtColor(timg, cv2.COLOR_BGR2GRAY)
     final2 = cv2.cvtColor(timg, cv2.COLOR_BGR2GRAY)
     img = timg
@@ -42,7 +43,6 @@ def run(filepath):
 
     # Convert from rgb to hsv
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-
     # Create mask separating background from object
     lower = np.array([0, 0, 0])
     upper = np.array([200, 150, 130])
@@ -73,7 +73,7 @@ def run(filepath):
                     cv2.rectangle(final, (rectangle[0], rectangle[1]), (rectangle[0] +
                                                                         rectangle[2], rectangle[1] + rectangle[3]), (0, 0, 0), 1)
 
-    #cv2.imshow("Hello", final)
+    # cv2.imshow("Hello", final)
     # cv2.waitKey(0)
 
     j = 0
@@ -106,6 +106,7 @@ def run(filepath):
         return False
 
     # Crop the image upon the rectangle
+
     for k in range(len(data)):
         newimg = final2[(data[k][1]):(data[k][1] + data[k][3]),
                         (data[k][0]):(data[k][0] + data[k][2])]
@@ -143,7 +144,6 @@ def run(filepath):
         # if (k == 2):
         #   cv2.imshow("Test", img2)
         #    cv2.waitKey(0)
-
         j = 0
         for item in rectangle:
             max = 0
@@ -156,7 +156,6 @@ def run(filepath):
             rectangle[len(rectangle) - 1 - j] = rectangle[index]
             rectangle[index] = temp
             j += 1
-
         test = []
 
         for n in range(len(rectangle)):
@@ -184,9 +183,8 @@ def run(filepath):
             finalimg = cv2.cvtColor(finalimg, cv2.COLOR_BGR2GRAY)
             ret, finalimg = cv2.threshold(finalimg, deviation - 30, 255, cv2.THRESH_BINARY_INV)
             finalimg = cv2.blur(finalimg, (2, 2))
-
             # Open blank white image
-            blank_image = cv2.imread("/Users/erichu/Downloads/white2.jpg", 10)
+            blank_image = cv2.imread("/Users/erichu/Desktop/white2.jpg", 10)
             blank_image = cv2.cvtColor(blank_image, cv2.COLOR_BGR2GRAY)
             blank_image[:, :] = [0]
             blank_image = blank_image[0:28, 0:28]
@@ -213,7 +211,6 @@ def run(filepath):
 
         train_images = train_images / 255.0
         test_images = test_images / 255.0
-
         model = keras.Sequential([
             keras.layers.Flatten(input_shape=(28, 28)),
             keras.layers.Dense(256, activation=tf.nn.relu),
@@ -222,14 +219,15 @@ def run(filepath):
             keras.layers.Dense(10, activation=tf.nn.softmax)
         ])
 
-        model.load_weights("/Users/erichu/Downloads/training1.ckpt")
+        model.load_weights("/Users/erichu/training1.ckpt")
 
         '''
         model.compile(optimizer='adam',
                       loss='sparse_categorical_crossentropy',
                       metrics=['accuracy'])
 
-        model_cp = keras.callbacks.ModelCheckpoint("/Users/ashwinr/Downloads/MenloHacks/training1.ckpt", save_weights_only = True, verbose = 1)
+        model_cp = keras.callbacks.ModelCheckpoint(
+            "/Users/ashwinr/Downloads/MenloHacks/training1.ckpt", save_weights_only = True, verbose = 1)
 
         model.fit(train_images, train_labels, epochs = 15, callbacks = [model_cp])
 
@@ -261,18 +259,20 @@ def run(filepath):
     return finalfinalfinal
 
 
-reader = open("/Users/erichu/Desktop/fastgrader/fastgrader/plswork.txt", "r")
-key_file = reader.readline()
-exam_file = reader.readline()
+reader = open("/Users/erichu/Desktop/TAuto/fastgrader/fastgrader/work.txt", "r")
+exam_file = reader.read()
 print exam_file
+print "Hello"
+reader1 = open("/Users/erichu/Desktop/TAuto/fastgrader/fastgrader/plswork.txt", "r")
+key_file = reader1.read()
 print key_file
-writer = open("/Users/erichu/Desktop/fastgrader/fastgrader/plswork.txt", "w")
 # filepath = reader.read()
 exam = run(exam_file)
 key = run(key_file)
 
-#print key
-#print exam
+
+# print key
+# print exam
 
 points = 0
 for item in exam:
@@ -280,6 +280,7 @@ for item in exam:
         if item == u:
             points += 1
 
+writer = open("/Users/erichu/Desktop/TAuto/fastgrader/fastgrader/plswork.txt", "w")
 print "Score: " + str(points * 1.0 / len(key))
 writer.write("Score: " + str(points * 1.0 / len(key)))
 writer.close()
