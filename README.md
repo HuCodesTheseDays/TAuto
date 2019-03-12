@@ -1,2 +1,2 @@
 # TAuto
-Menlohacks IV with Ashwin Rajesh, Grace Xin, and Elaine Chen
+Menlohacks IV with Ashwin Rajesh, Grace Xin, and Elaine Huang
